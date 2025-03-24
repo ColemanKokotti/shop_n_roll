@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
+
+
 class Item {
+  final String id;
   final String nameItem;
   final String iconItem;
   final String descriptionItem;
 
   Item({
+    required this.id,
     required this.nameItem,
     required this.iconItem,
     required this.descriptionItem,
@@ -32,7 +36,7 @@ class IconOrImage {
   }
 }
 
-final Map<String, IconOrImage> iconMap = {
+final Map iconMap = {
   'phone': IconOrImage(imagePath: 'assets/icons/smartphone.png'),
   'headphones': IconOrImage(imagePath: 'assets/icons/headphones.png'),
   'ice_cream': IconOrImage(imagePath: 'assets/icons/ice_cream.png'),
@@ -54,10 +58,10 @@ final Map<String, IconOrImage> iconMap = {
   'toilet_paper': IconOrImage(imagePath: 'assets/icons/toilet_paper.png'),
 };
 
-List<String> get iconNames => iconMap.keys.toList();
-List<IconOrImage> get iconImageList => iconMap.values.toList();
-List<IconData?> get iconsList => iconMap.values.where((item) => item.isIcon).map((item) => item.iconData).toList();
-List<String?> get imagesList => iconMap.values.where((item) => item.isImage).map((item) => item.imagePath).toList();
+List get iconNames => iconMap.keys.toList();
+List get iconImageList => iconMap.values.toList();
+List get iconsList => iconMap.values.where((item) => item.isIcon).map((item) => item.iconData).toList();
+List get imagesList => iconMap.values.where((item) => item.isImage).map((item) => item.imagePath).toList();
 
 IconOrImage getIconOrImageFromString(String iconName) {
   return iconMap[iconName] ?? IconOrImage(iconData: Icons.error);
@@ -70,3 +74,4 @@ Widget getWidgetFromString(String iconName, {double size = 30.0, Color? color}) 
   }
   return Icon(Icons.error, size: size, color: Colors.red);
 }
+

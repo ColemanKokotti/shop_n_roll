@@ -1,25 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../Bloc_Cubit/CreateItemCubit/create_item_state.dart';
+import 'auth_service.dart';
 
-class ItemService {
-  final CollectionReference _itemsCollection = FirebaseFirestore.instance.collection('Items');
+class CreateItemService {
+  final AuthService _authService;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<bool> addItemToFirestore(AddButtonState state) async {
-    if (state.nameItem.isEmpty || state.descriptionItem.isEmpty || state.selectedIcon.isEmpty) {
-      return false;
-    }
+  CreateItemService(this._authService);
 
+  Future<bool> addItemToUser(CreateItemState state) async {
     try {
-      await _itemsCollection.add({
-        'nameItem': state.nameItem,
-        'iconItem': state.selectedIcon,
-        'descriptionItem': state.descriptionItem,
-        'quantity': state.quantity,
-        'imageUrl': state.imageUrl,
-      });
-      return true;
+      final currentUser = _authService.getCurrentUser();
+      if (currentUser != null) {
+        final userDoc = _firestore.collection('users').doc(currentUser.uid);
+        await userDoc.collection('items').add({
+          'nameItem': state.nameItem,
+          'iconItem': state.selectedIcon,
+          'descriptionItem': state.descriptionItem,
+          'quantity': state.quantity,
+          'imageUrl': state.imageUrl,
+        });
+        return true;
+      }
+      return false;
     } catch (e) {
-      print("Errore nell'aggiungere l'elemento: $e");
+      print('Errore nell\'aggiungere l\'oggetto all\'utente: $e');
       return false;
     }
   }

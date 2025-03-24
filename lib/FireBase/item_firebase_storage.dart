@@ -1,39 +1,88 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../FireBase/auth_service.dart';
 
 class ItemFirebaseStorage {
-  final CollectionReference _itemsCollection = FirebaseFirestore.instance.collection('Items');
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AuthService _authService = AuthService(FirebaseAuth.instance);
 
-  Future<Map<String, dynamic>?> deleteItem(String documentId) async {
+  Future<Map<String, dynamic>?> getItem(String documentId) async {
     try {
-      DocumentSnapshot doc = await _itemsCollection.doc(documentId).get();
-      Map<String, dynamic>? deletedItem = doc.data() as Map<String, dynamic>?;
+      final user = _authService.getCurrentUser();
+      if (user == null) return null;
 
-      await _itemsCollection.doc(documentId).delete();
+      final docSnapshot = await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('items')
+          .doc(documentId)
+          .get();
 
-      return deletedItem;
+      if (docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        data['id'] = documentId;
+        return data;
+      }
+      return null;
     } catch (e) {
-      print('Errore durante l\'eliminazione: $e');
+      print('Errore nel recupero dell\'elemento: $e');
       return null;
     }
   }
 
-  Future<bool> undoDelete(String documentId, Map<String, dynamic> item) async {
+  Future<bool> deleteItem(String documentId) async {
     try {
-      await _itemsCollection.doc(documentId).set(item);
+      final user = _authService.getCurrentUser();
+      if (user == null) return false;
+
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('items')
+          .doc(documentId)
+          .delete();
+
       return true;
     } catch (e) {
-      print('Errore durante il ripristino: $e');
+      print('Errore nella cancellazione dell\'elemento: $e');
+      return false;
+    }
+  }
+
+  Future<bool> undoDelete(String documentId, Map<String, dynamic> itemData) async {
+    try {
+      final user = _authService.getCurrentUser();
+      if (user == null) return false;
+
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('items')
+          .doc(documentId)
+          .set(itemData);
+
+      return true;
+    } catch (e) {
+      print('Errore nel ripristino dell\'elemento: $e');
       return false;
     }
   }
 
   Future<bool> updateQuantity(String documentId, int newQuantity) async {
     try {
-      newQuantity = newQuantity < 0 ? 0 : newQuantity;
-      await _itemsCollection.doc(documentId).update({'quantity': newQuantity});
+      final user = _authService.getCurrentUser();
+      if (user == null) return false;
+
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('items')
+          .doc(documentId)
+          .update({'quantity': newQuantity});
+
       return true;
     } catch (e) {
-      print('Errore durante l\'aggiornamento della quantità: $e');
+      print('Errore nell\'aggiornamento della quantità: $e');
       return false;
     }
   }

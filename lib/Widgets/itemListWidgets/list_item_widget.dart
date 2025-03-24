@@ -7,10 +7,13 @@ import '../../Bloc_Cubit/ItemListCubit/item_list_state.dart';
 import 'icon_selector_button.dart';
 import '../../Data/data_items.dart';
 import '../../FireBase/item_firebase_storage.dart';
+import '../../FireBase/auth_service.dart';
+import '../../FireBase/account_service.dart';
 import '../../Screens/list_detailed_screen.dart';
 import '../../Bloc_Cubit/ItemListCubit/item_list_cubit.dart';
 import 'delete_item_widget.dart';
 import 'bought_item_button_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ItemListWidget extends StatelessWidget {
   const ItemListWidget({super.key});
@@ -19,15 +22,17 @@ class ItemListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ItemFirebaseStorage itemFirebaseStorage = ItemFirebaseStorage();
+    final AuthService authService = AuthService(FirebaseAuth.instance);
+    final AccountService accountService = AccountService();
 
     return BlocProvider(
-      create: (context) => ItemListCubit(itemFirebaseStorage),
+      create: (context) => ItemListCubit(itemFirebaseStorage, authService, accountService),
       child: BlocBuilder<ItemListCubit, ItemListState>(
         builder: (context, state) {
           final itemListCubit = context.read<ItemListCubit>();
 
           return StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('Items').snapshots(),
+            stream: _getUserItems(authService),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(child: Text('Errore nel caricamento dei dati'));
@@ -49,15 +54,16 @@ class ItemListWidget extends StatelessWidget {
                     itemBuilder: (context, index) {
                       DocumentSnapshot document = snapshot.data!.docs[index];
                       Map data = document.data() as Map;
+                      String documentId = document.id;
                       String nameItem = data['nameItem'] ?? 'Nome non disponibile';
                       String iconItem = data['iconItem'] ?? 'error';
                       String descriptionItem = data['descriptionItem'] ?? 'Nessuna descrizione';
                       int quantity = (data['quantity'] ?? 0) is int
                           ? (data['quantity'] ?? 0)
                           : int.tryParse(data['quantity']?.toString() ?? '0') ?? 0;
-                      String documentId = document.id;
 
                       Item item = Item(
+                        id: documentId,
                         nameItem: nameItem,
                         iconItem: iconItem,
                         descriptionItem: descriptionItem,
@@ -77,11 +83,11 @@ class ItemListWidget extends StatelessWidget {
                               color: theme.iconTheme.color,
                             ),
                           ),
-                          confirmDismiss: (direction) {
-                            return showDeleteConfirmationDialog(context);
+                          confirmDismiss: (direction) async {
+                            return await showDeleteConfirmationDialog(context, documentId,itemListCubit);
                           },
                           onDismissed: (direction) {
-                            itemListCubit.deleteItem(documentId);
+                            // Deletion already handled in showDeleteConfirmationDialog
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(25),
@@ -124,7 +130,9 @@ class ItemListWidget extends StatelessWidget {
                                     IconButton(
                                       icon: Icon(Icons.remove, color: theme.iconTheme.color),
                                       onPressed: () {
-                                        itemListCubit.updateQuantity(documentId, quantity - 1);
+                                        if (quantity > 0) {
+                                          itemListCubit.updateQuantity(documentId, quantity - 1);
+                                        }
                                       },
                                     ),
                                     Container(
@@ -183,3 +191,15 @@ class ItemListWidget extends StatelessWidget {
   }
 }
 
+Stream<QuerySnapshot> _getUserItems(AuthService authService) {
+  User? currentUser = authService.getCurrentUser();
+  if (currentUser != null) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser.uid)
+        .collection('items')
+        .snapshots();
+  } else {
+    return Stream.empty();
+  }
+}

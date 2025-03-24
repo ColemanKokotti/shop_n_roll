@@ -1,13 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../Bloc_Cubit/CreateItemCubit/create_item_cubit.dart';
 import '../../Bloc_Cubit/CreateItemCubit/create_item_state.dart';
 import '../../FireBase/create_item_firebase_storage.dart';
+import '../../FireBase/auth_service.dart';
 
 class ActionButtonsWidget extends StatelessWidget {
-  final AddButtonCubit cubit;
-  final AddButtonState state;
+  final CreateItemCubit cubit;
+  final CreateItemState state;
 
-  const ActionButtonsWidget({super.key, 
+  const ActionButtonsWidget({
+    super.key,
     required this.cubit,
     required this.state,
   });
@@ -15,15 +18,16 @@ class ActionButtonsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
           onPressed: () async {
-            final ItemService itemService = ItemService();
-            bool success = await itemService.addItemToFirestore(state);
+            final CreateItemService itemService = CreateItemService(
+              AuthService(FirebaseAuth.instance)
+            );
+            bool success = await itemService.addItemToUser(state);
             if (success) {
               cubit.reset();
               Navigator.of(context).pop();

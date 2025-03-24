@@ -18,7 +18,7 @@ class CreateItemButton extends StatelessWidget {
           context: context,
           builder: (BuildContext dialogContext) {
             return BlocProvider.value(
-              value: context.read<AddButtonCubit>(),
+              value: context.read<CreateItemCubit>(),
               child: CreateItemDialog(),
             );
           },

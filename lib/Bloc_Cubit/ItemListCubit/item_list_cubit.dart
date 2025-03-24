@@ -1,31 +1,66 @@
 import 'package:bloc/bloc.dart';
 import '../../FireBase/item_firebase_storage.dart';
+import '../../FireBase/auth_service.dart';
+import '../../FireBase/account_service.dart';
 import 'item_list_state.dart';
-
 
 class ItemListCubit extends Cubit<ItemListState> {
   final ItemFirebaseStorage _itemFirebaseStorage;
+  final AuthService _authService;
+  final AccountService _accountService;
 
-  ItemListCubit(this._itemFirebaseStorage) : super(ItemListState());
+  ItemListCubit(this._itemFirebaseStorage, this._authService, this._accountService) : super(ItemListState());
 
-  void deleteItem(String documentId) async {
-    Map<String, dynamic>? deletedItem = await _itemFirebaseStorage.deleteItem(documentId);
-    emit(state.copyWith(deletedItem: deletedItem, deletedItemId: documentId));
+  Future<void> deleteItem(String documentId) async {
+    try {
+      final itemData = await _itemFirebaseStorage.getItem(documentId);
+
+      if (itemData != null) {
+        await _itemFirebaseStorage.deleteItem(documentId);
+
+        emit(state.copyWith(
+          deletedItem: itemData,
+          deletedItemId: documentId,
+        ));
+
+        if (_authService.getCurrentUser() != null) {
+          await _accountService.removeItemFromAccount(_authService.getCurrentUser()!.uid, documentId);
+        }
+      }
+    } catch (e) {
+      print("Errore durante la cancellazione dell'elemento: $e");
+      emit(state.setError("Errore durante la cancellazione: ${e.toString()}"));
     }
+  }
 
-  void undoDelete() async {
+  Future<void> undoDelete() async {
     if (state.deletedItem != null && state.deletedItemId != null) {
-      bool success = await _itemFirebaseStorage.undoDelete(state.deletedItemId!, state.deletedItem!);
-      if (success) {
-        emit(state.clearDeletedItem());
+      try {
+        bool success = await _itemFirebaseStorage.undoDelete(state.deletedItemId!, state.deletedItem!);
+        if (success) {
+          emit(state.clearDeletedItem());
+          if (_authService.getCurrentUser() != null) {
+            await _accountService.addItemToAccount(_authService.getCurrentUser()!.uid, state.deletedItemId!);
+          }
+        }
+      } catch (e) {
+        print("Errore durante il ripristino dell'elemento: $e");
+        emit(state.setError("Errore durante il ripristino: ${e.toString()}"));
       }
     }
   }
 
-  void updateQuantity(String documentId, int newQuantity) async {
-    bool success = await _itemFirebaseStorage.updateQuantity(documentId, newQuantity);
-    if (success) {
-      // Handle any necessary state change here, e.g., update the list or emit a new state
+  Future<void> updateQuantity(String documentId, int newQuantity) async {
+    try {
+      if (newQuantity >= 0) {
+        bool success = await _itemFirebaseStorage.updateQuantity(documentId, newQuantity);
+        if (success) {
+          emit(state.updateQuantity(documentId, newQuantity));
+        }
+      }
+    } catch (e) {
+      print("Errore durante l'aggiornamento della quantità: $e");
+      emit(state.setError("Errore durante l'aggiornamento: ${e.toString()}"));
     }
   }
 }

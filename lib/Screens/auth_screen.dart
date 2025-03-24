@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../Bloc_Cubit/AuthCubit/auth_cubit.dart';
 import '../Bloc_Cubit/AuthCubit/auth_state.dart';
 import '../FireBase/auth_service.dart';
+import '../FireBase/account_service.dart';
 import '../Widgets/AuthWidgets/auth_form_widget.dart';
 import '../Widgets/AuthWidgets/error_dialog_widget.dart';
 import 'list_screen.dart';
@@ -15,7 +16,7 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return BlocProvider(
-      create: (context) => AuthCubit(AuthService(FirebaseAuth.instance)),
+      create: (context) => AuthCubit(AuthService(FirebaseAuth.instance), AccountService()),
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -54,7 +55,7 @@ class AuthScreen extends StatelessWidget {
                   ),
                 );
               } else {
-                return AuthForm(); // This is where we include the AuthForm
+                return AuthForm();
               }
             },
           ),

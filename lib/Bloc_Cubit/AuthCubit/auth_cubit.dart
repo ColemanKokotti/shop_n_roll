@@ -1,11 +1,13 @@
 import 'package:bloc/bloc.dart';
 import '../../FireBase/auth_service.dart';
+import '../../FireBase/account_service.dart'; // Importa AccountService
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthService _authService;
+  final AccountService _accountService;
 
-  AuthCubit(this._authService) : super(AuthInitial());
+  AuthCubit(this._authService, this._accountService) : super(AuthInitial());
 
   void login(String email, String password) {
     emit(AuthLoading());
@@ -25,6 +27,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     _authService.register(email, password).then((user) {
       if (user != null) {
+        _accountService.createUserAccount(user.uid); // Crea l'account utente
         emit(AuthAuthenticated(user));
       } else {
         emit(AuthErrorDialogState('Registrazione fallita. Si prega di riprovare.'));

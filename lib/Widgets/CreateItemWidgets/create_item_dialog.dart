@@ -13,8 +13,8 @@ class CreateItemDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cubit = context.read<AddButtonCubit>();
-    final state = context.watch<AddButtonCubit>().state;
+    final cubit = context.read<CreateItemCubit>();
+    final state = context.watch<CreateItemCubit>().state;
 
     return AlertDialog(
       backgroundColor: theme.scaffoldBackgroundColor,

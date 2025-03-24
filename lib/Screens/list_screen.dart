@@ -13,7 +13,7 @@ class ListScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocProvider(
-      create: (context) => AddButtonCubit(),
+      create: (context) => CreateItemCubit(),
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(

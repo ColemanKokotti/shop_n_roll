@@ -1,11 +1,11 @@
-class AddButtonState {
+class CreateItemState {
   final String nameItem;
   final String descriptionItem;
   final String selectedIcon;
   final int quantity;
   final String? imageUrl;
 
-  AddButtonState({
+  CreateItemState({
     this.nameItem = '',
     this.descriptionItem = '',
     this.selectedIcon = '',
@@ -13,14 +13,14 @@ class AddButtonState {
     this.imageUrl,
   });
 
-  AddButtonState copyWith({
+  CreateItemState copyWith({
     String? nameItem,
     String? descriptionItem,
     String? selectedIcon,
     int? quantity,
     String? imageUrl,
   }) {
-    return AddButtonState(
+    return CreateItemState(
       nameItem: nameItem ?? this.nameItem,
       descriptionItem: descriptionItem ?? this.descriptionItem,
       selectedIcon: selectedIcon ?? this.selectedIcon,
@@ -29,7 +29,7 @@ class AddButtonState {
     );
   }
 
-  AddButtonState reset() {
-    return AddButtonState();
+  CreateItemState reset() {
+    return CreateItemState();
   }
 }

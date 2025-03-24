@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../Bloc_Cubit/CreateItemCubit/create_item_cubit.dart';
 
 class QuantitySelectorWidget extends StatelessWidget {
-  final AddButtonCubit cubit;
+  final CreateItemCubit cubit;
   final ThemeData theme;
 
   const QuantitySelectorWidget({super.key,

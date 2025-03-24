@@ -4,9 +4,7 @@ import "package:bloc/bloc.dart";
 import 'package:image_picker/image_picker.dart';
 import 'create_item_state.dart';
 
-
-
-class AddButtonCubit extends Cubit<AddButtonState> {
+class CreateItemCubit extends Cubit<CreateItemState> {
   final CollectionReference _itemsCollection = FirebaseFirestore.instance.collection('Items');
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -14,7 +12,7 @@ class AddButtonCubit extends Cubit<AddButtonState> {
 
   final ImagePicker _picker = ImagePicker();
 
-  AddButtonCubit() : super(AddButtonState()) {
+  CreateItemCubit() : super(CreateItemState()) {
     nameController.addListener(_updateNameFromController);
     descriptionController.addListener(_updateDescriptionFromController);
     quantityController.addListener(_updateQuantityFromController);
@@ -104,7 +102,7 @@ class AddButtonCubit extends Cubit<AddButtonState> {
     nameController.clear();
     descriptionController.clear();
     quantityController.text = '1';
-    emit(AddButtonState());
+    emit(CreateItemState());
   }
 
   @override
