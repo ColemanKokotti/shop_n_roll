@@ -1,17 +1,35 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'icon_selector_state.dart';
 
 class IconSelectorCubit extends Cubit<IconSelectorState> {
   final String documentId;
-  final CollectionReference _itemsCollection = FirebaseFirestore.instance.collection('Items');
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final User? _currentUser;
 
-  IconSelectorCubit({required String initialIconName, required this.documentId})
-      : super(IconSelectorState(currentIconName: initialIconName));
+  IconSelectorCubit({
+    required String initialIconName,
+    required this.documentId,
+    User? currentUser,
+  }) :
+        _currentUser = currentUser ?? FirebaseAuth.instance.currentUser,
+        super(IconSelectorState(currentIconName: initialIconName));
 
   void updateIcon(String newIconName) async {
     try {
-      await _itemsCollection.doc(documentId).update({'iconItem': newIconName});
+      if (_currentUser == null) {
+        emit(state.copyWith(errorMessage: 'Utente non autenticato'));
+        return;
+      }
+
+      await _firestore
+          .collection('users')
+          .doc(_currentUser.uid)
+          .collection('items')
+          .doc(documentId)
+          .update({'iconItem': newIconName});
+
       emit(state.copyWith(currentIconName: newIconName));
     } catch (e) {
       print('Errore durante l\'aggiornamento dell\'icona: $e');

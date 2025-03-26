@@ -87,7 +87,6 @@ class ItemListWidget extends StatelessWidget {
                             return await showDeleteConfirmationDialog(context, documentId,itemListCubit);
                           },
                           onDismissed: (direction) {
-                            // Deletion already handled in showDeleteConfirmationDialog
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(25),
@@ -104,7 +103,6 @@ class ItemListWidget extends StatelessWidget {
                                 leading: IconSelectorButton(
                                   currentIconName: iconItem,
                                   documentId: documentId,
-                                  onIconChanged: (newIcon) {},
                                 ),
                                 title: Text(
                                   nameItem,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../Bloc_Cubit/ModifyIconCubit/icon_selector_cubit.dart';
 import '../../Bloc_Cubit/ModifyIconCubit/icon_selector_state.dart';
 import '../../Data/data_items.dart';
@@ -8,13 +9,11 @@ import 'modify_icon_widget.dart';
 class IconSelectorButton extends StatelessWidget {
   final String currentIconName;
   final String documentId;
-  final Function(String) onIconChanged;
 
   const IconSelectorButton({
     super.key,
     required this.currentIconName,
     required this.documentId,
-    required this.onIconChanged,
   });
 
   void _showIconSelector(BuildContext context, IconSelectorCubit cubit) {
@@ -45,7 +44,7 @@ class IconSelectorButton extends StatelessWidget {
                     selectedIcon: state.currentIconName,
                     documentId: documentId,
                     onIconSelect: (newIcon) {
-                      cubit.updateIcon(newIcon); // Aggiorna il Cubit
+                      cubit.updateIcon(newIcon);
                     },
                   ),
                 ),
@@ -61,7 +60,6 @@ class IconSelectorButton extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          onIconChanged(state.currentIconName);
                           Navigator.of(context).pop();
                         },
                         child: Text('Conferma', style: TextStyle(fontSize: 15)),
@@ -85,6 +83,7 @@ class IconSelectorButton extends StatelessWidget {
       create: (context) => IconSelectorCubit(
         initialIconName: currentIconName,
         documentId: documentId,
+        currentUser: FirebaseAuth.instance.currentUser,
       ),
       child: BlocBuilder<IconSelectorCubit, IconSelectorState>(
         builder: (context, state) {

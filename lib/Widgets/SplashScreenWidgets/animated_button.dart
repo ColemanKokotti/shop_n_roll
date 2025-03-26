@@ -44,7 +44,7 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
         padding: const EdgeInsets.only(top: 20),
         child: ElevatedButton(
           onPressed: widget.onPressed,
-          child: Text('Let \'s go shopping',style: TextStyle(color: theme.textTheme.labelLarge?.color),),
+          child: Text('Let \'s go shopping',style: TextStyle(color: theme.appBarTheme.foregroundColor),),
         ),
       ),
     );

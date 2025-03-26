@@ -1,57 +1,109 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../Bloc_Cubit/ThemeCubit/theme_cubit.dart';
+import '../../FireBase/account_service.dart';
 import '../../FireBase/auth_service.dart';
-import '../../FireBase/account_service.dart'; // Importa AccountService
+import '../../FireBase/theme_preference_service.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthService _authService;
   final AccountService _accountService;
+  final ThemeCubit _themeCubit;
+  final ThemePreferenceService _themePreferenceService;
 
-  AuthCubit(this._authService, this._accountService) : super(AuthInitial());
-
-  void login(String email, String password) {
-    emit(AuthLoading());
-    _authService.login(email, password).then((user) {
-      if (user != null) {
-        emit(AuthAuthenticated(user));
-      } else {
-        emit(AuthErrorDialogState('Login fallito. Si prega di riprovare.'));
-      }
-    }).catchError((e) {
-      print('Errore nel login: $e');
-      emit(AuthErrorDialogState('Login fallito. Si prega di riprovare.'));
-    });
+  AuthCubit(
+      this._authService,
+      this._accountService,
+      this._themeCubit,
+      this._themePreferenceService
+      ) : super(AuthInitial()) {
+    // No need to manually set default theme as ThemeCubit constructor handles it
   }
 
-  void register(String email, String password) {
-    emit(AuthLoading());
-    _authService.register(email, password).then((user) {
+  Future<void> login(String email, String password) async {
+    try {
+      emit(AuthLoading());
+
+      // Perform login
+      User? user = await _authService.login(email, password);
+
       if (user != null) {
-        _accountService.createUserAccount(user.uid); // Crea l'account utente
+        // Try to load the user's saved theme
+        String? savedTheme = await _themePreferenceService.getThemePreference(user.uid);
+
+        if (savedTheme != null) {
+          // Set the theme for the user
+          _themeCubit.selectTheme(savedTheme);
+        }
+
         emit(AuthAuthenticated(user));
       } else {
-        emit(AuthErrorDialogState('Registrazione fallita. Si prega di riprovare.'));
+        emit(AuthUnauthenticated());
       }
-    }).catchError((e) {
-      print('Errore nella registrazione: $e');
-      emit(AuthErrorDialogState('Registrazione fallita. Si prega di riprovare.'));
-    });
+    } catch (e) {
+      emit(AuthError(e.toString()));
+      rethrow;
+    }
   }
 
-  void logout() {
-    _authService.logout().then((_) {
+  Future<void> register(String email, String password) async {
+    try {
+      emit(AuthLoading());
+
+      // Perform registration
+      User? user = await _authService.register(email, password);
+
+      if (user != null) {
+        // Create user account
+        await _accountService.createUserAccount(user.uid);
+
+        // Set default theme
+        await _themePreferenceService.saveThemePreference(user.uid, 'default');
+
+        // Ensure theme is set to default
+        _themeCubit.selectTheme('default');
+
+        emit(AuthAuthenticated(user));
+      } else {
+        emit(AuthUnauthenticated());
+      }
+    } catch (e) {
+      emit(AuthError(e.toString()));
+      rethrow;
+    }
+  }
+
+  Future<void> checkAuthStatus() async {
+    try {
+      User? currentUser = _authService.getCurrentUser();
+
+      if (currentUser != null) {
+        // Try to load the user's saved theme
+        String? savedTheme = await _themePreferenceService.getThemePreference(currentUser.uid);
+
+        if (savedTheme != null) {
+          // Set the theme for the user
+          _themeCubit.selectTheme(savedTheme);
+        }
+
+        emit(AuthAuthenticated(currentUser));
+      } else {
+        emit(AuthUnauthenticated());
+      }
+    } catch (e) {
       emit(AuthUnauthenticated());
-    }).catchError((e) {
-      print('Errore nel logout: $e');
-      emit(AuthErrorDialogState('Errore durante il logout.'));
-    });
+    }
   }
 
-  void toggleForm() {
-    if (state is AuthLoginState) {
-      emit(AuthRegisterState());
-    } else {
-      emit(AuthLoginState());
+  Future<void> logout() async {
+    try {
+      await _authService.logout();
+      // Reset to default theme on logout
+      _themeCubit.selectTheme('default');
+      emit(AuthUnauthenticated());
+    } catch (e) {
+      emit(AuthError(e.toString()));
     }
   }
 }
