@@ -1,67 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UndoButtonWidget extends StatefulWidget {
-  final Function() onUndo;
+import '../../Bloc_Cubit/ItemListCubit/item_list_cubit.dart';
+import '../../Bloc_Cubit/ItemListCubit/item_list_state.dart';
 
-  const UndoButtonWidget({
-    super.key,
-    required this.onUndo,
-  });
-
-  @override
-  _UndoButtonWidgetState createState() => _UndoButtonWidgetState();
-}
-
-class _UndoButtonWidgetState extends State<UndoButtonWidget> {
-  late bool _isVisible;
-
-  @override
-  void initState() {
-    super.initState();
-    _isVisible = true;
-
-    Future.delayed(Duration(seconds: 10), () {
-      if (mounted) {
-        setState(() {
-          _isVisible = false;
-        });
-      }
-    });
-  }
+class UndoButtonWidget extends StatelessWidget {
+  const UndoButtonWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (!_isVisible) return SizedBox.shrink();
-
     final theme = Theme.of(context);
 
-    return Positioned(
-      bottom: 60,
-      left: 0,
-      right: 0,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: GestureDetector(
-          onTap: () {
-            widget.onUndo();
-            setState(() {
-              _isVisible = false;
-            });
-          },
-          child: Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
+    return BlocBuilder<ItemListCubit, ItemListState>(
+      builder: (context, state) {
+        if (state.deletedItem == null || state.isItemRestored) {
+          return const SizedBox.shrink();
+        }
+
+        return Positioned(
+          bottom: 60,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Material(
+              elevation: 6,
+              borderRadius: BorderRadius.circular(30),
               color: theme.primaryColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.undo,
-              size: 30,
-              color: theme.iconTheme.color,
+              child: InkWell(
+                onTap: () {
+                  context.read<ItemListCubit>().undoDelete();
+                },
+                borderRadius: BorderRadius.circular(30),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.undo,
+                        size: 24,
+                        color: theme.iconTheme.color,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Annulla',
+                        style: TextStyle(
+                          color: theme.iconTheme.color,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

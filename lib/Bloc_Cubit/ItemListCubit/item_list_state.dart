@@ -3,12 +3,14 @@ class ItemListState {
   final String? deletedItemId;
   final Map<String, int> itemQuantities;
   final String? errorMessage;
+  final bool isItemRestored;
 
   ItemListState({
     this.deletedItem,
     this.deletedItemId,
     this.itemQuantities = const {},
     this.errorMessage,
+    this.isItemRestored = false,
   });
 
   ItemListState copyWith({
@@ -16,17 +18,24 @@ class ItemListState {
     String? deletedItemId,
     Map<String, int>? itemQuantities,
     String? errorMessage,
+    bool? isItemRestored,
   }) {
     return ItemListState(
       deletedItem: deletedItem ?? this.deletedItem,
       deletedItemId: deletedItemId ?? this.deletedItemId,
       itemQuantities: itemQuantities ?? this.itemQuantities,
       errorMessage: errorMessage,
+      isItemRestored: isItemRestored ?? this.isItemRestored,
     );
   }
 
   ItemListState clearDeletedItem() {
-    return copyWith(deletedItem: null, deletedItemId: null, errorMessage: null);
+    return copyWith(
+      deletedItem: null,
+      deletedItemId: null,
+      errorMessage: null,
+      isItemRestored: true,
+    );
   }
 
   ItemListState updateQuantity(String itemId, int quantity) {

@@ -44,7 +44,9 @@ class IconSelectorButton extends StatelessWidget {
                   child: ModifyIconWidget(
                     selectedIcon: state.currentIconName,
                     documentId: documentId,
-                    onIconSelect: (newIcon) {},
+                    onIconSelect: (newIcon) {
+                      cubit.updateIcon(newIcon); // Aggiorna il Cubit
+                    },
                   ),
                 ),
                 actions: [

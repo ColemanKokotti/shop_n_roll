@@ -42,6 +42,8 @@ dependencies:
   flutter_bloc: ^9.1.0
 
   bloc: any
+  flutter_launcher_icons: ^0.14.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -95,3 +97,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/shop_n_roll_icon_app.jpeg"

@@ -177,10 +177,7 @@ class ItemListWidget extends StatelessWidget {
                       );
                     },
                   ),
-                  if (state.deletedItem != null)
-                    UndoButtonWidget(
-                      onUndo: () => itemListCubit.undoDelete(),
-                    ),
+                  UndoButtonWidget(),
                 ],
               );
             },

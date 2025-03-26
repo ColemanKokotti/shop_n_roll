@@ -15,6 +15,7 @@ class IconSelectorCubit extends Cubit<IconSelectorState> {
       emit(state.copyWith(currentIconName: newIconName));
     } catch (e) {
       print('Errore durante l\'aggiornamento dell\'icona: $e');
+      emit(state.copyWith(errorMessage: 'Errore durante l\'aggiornamento dell\'icona.'));
     }
   }
 }

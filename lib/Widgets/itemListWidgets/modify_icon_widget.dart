@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../Bloc_Cubit/ModifyIconCubit/icon_selector_cubit.dart';
 import '../../Data/data_items.dart';
 
-
 class ModifyIconWidget extends StatelessWidget {
   final String selectedIcon;
   final String documentId;
   final Function(String) onIconSelect;
 
-  const ModifyIconWidget({super.key, 
+  const ModifyIconWidget({
+    super.key,
     required this.selectedIcon,
     required this.documentId,
     required this.onIconSelect,
@@ -28,14 +28,14 @@ class ModifyIconWidget extends StatelessWidget {
       ),
       itemCount: iconNames.length,
       itemBuilder: (context, index) {
-        final String name = iconNames[index];
-        final Widget iconWidget = getWidgetFromString(name, size: 30, color: theme.iconTheme.color);
-        final bool isSelected = selectedIcon == name;
+        final String iconName = iconNames[index];
+        final Widget iconWidget = getWidgetFromString(iconName, size: 30, color: theme.iconTheme.color);
+        final bool isSelected = selectedIcon == iconName;
 
         return GestureDetector(
           onTap: () {
-            iconSelectorCubit.updateIcon(name);
-            onIconSelect(name);
+            iconSelectorCubit.updateIcon(iconName);
+            onIconSelect(iconName);
           },
           child: Container(
             decoration: BoxDecoration(

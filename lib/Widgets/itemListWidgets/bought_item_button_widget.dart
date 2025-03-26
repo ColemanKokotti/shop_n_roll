@@ -14,7 +14,7 @@ class BoughtItemButtonWidget extends StatelessWidget {
       builder: (context, isBought) {
         return IconButton(
           icon: Icon(
-            isBought ? Icons.remove_shopping_cart_outlined: Icons.shopping_cart_checkout ,
+            isBought ? Icons.check_circle: Icons.add_circle_outlined ,
             color: isBought ? theme.iconTheme.color : theme.iconTheme.color,
           ),
           onPressed: () => context.read<BuyedItemCubit>().toggleItemStatus(),
