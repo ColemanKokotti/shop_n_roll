@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -35,7 +36,7 @@ class ItemListWidget extends StatelessWidget {
             stream: _getUserItems(authService),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return Center(child: Text('Errore nel caricamento dei dati'));
+                return Center(child: Text('Error loading data'.tr()));
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -43,7 +44,7 @@ class ItemListWidget extends StatelessWidget {
               }
 
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(child: Text('Nessun elemento trovato'));
+                return Center(child: Text('No items found'.tr()));
               }
 
               return Stack(
@@ -55,9 +56,9 @@ class ItemListWidget extends StatelessWidget {
                       DocumentSnapshot document = snapshot.data!.docs[index];
                       Map data = document.data() as Map;
                       String documentId = document.id;
-                      String nameItem = data['nameItem'] ?? 'Nome non disponibile';
+                      String nameItem = data['nameItem'] ?? 'Name not available'.tr();
                       String iconItem = data['iconItem'] ?? 'error';
-                      String descriptionItem = data['descriptionItem'] ?? 'Nessuna descrizione';
+                      String descriptionItem = data['descriptionItem'] ?? 'No description'.tr();
                       int quantity = (data['quantity'] ?? 0) is int
                           ? (data['quantity'] ?? 0)
                           : int.tryParse(data['quantity']?.toString() ?? '0') ?? 0;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Widgets/SplashScreenWidgets/animated_button.dart';
 import 'auth_screen.dart';
+import 'list_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -47,6 +49,23 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         _showButton = true;
       });
     });
+
+    _checkStayConnected();
+  }
+
+  Future<void> _checkStayConnected() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool stayConnectedPreference = prefs.getBool('stayConnected') ?? false;
+
+    if (stayConnectedPreference) {
+      await Future.delayed(Duration(seconds: 4));
+
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const ListScreen()),
+        );
+      }
+    }
   }
 
   @override
@@ -79,13 +98,17 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               child: Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: Text(
-                  "Shop 'n' Roll ",
+                  "Shop 'n' Roll",
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
-                    color: theme.textTheme.labelLarge?.color,
+                    foreground: Paint()
+                      ..shader = LinearGradient(
+                        colors: [theme.primaryColor, theme.secondaryHeaderColor],
+                      ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 50.0)),
                   ),
-                ),
+                )
+
               ),
             ),
             if (_showButton)

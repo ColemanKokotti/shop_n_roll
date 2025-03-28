@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../Bloc_Cubit/CreateItemCubit/create_item_cubit.dart';
@@ -36,16 +37,16 @@ class ActionButtonsWidget extends StatelessWidget {
             }
           },
           child: Text(
-            'Aggiungi',
-            style: TextStyle(color: theme.textTheme.labelLarge?.color, fontSize: 15),
+            'Add'.tr(),
+            style: TextStyle(color:  theme.appBarTheme.foregroundColor, fontSize: 15),
           ),
         ),
         SizedBox(width: 8),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
-            'Annulla',
-            style: TextStyle(color: theme.textTheme.labelLarge?.color, fontSize: 15),
+            'Cancel'.tr(),
+            style: TextStyle(color:   theme.appBarTheme.foregroundColor, fontSize: 15),
           ),
         ),
       ],
@@ -66,7 +67,7 @@ class ActionButtonsWidget extends StatelessWidget {
           backgroundColor: theme.appBarTheme.backgroundColor,
           title: Center(
             child: Text(
-              'Attenzione',
+              'Attention'.tr(),
               style: TextStyle(
                 color: theme.textTheme.labelLarge?.color,
                 fontSize: 20,
@@ -77,7 +78,7 @@ class ActionButtonsWidget extends StatelessWidget {
           content: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Tutti i campi devono essere compilati per la creazione dell\'item.',
+              'All fields must be filled in to create the item.'.tr(),
               style: TextStyle(
                 color: theme.textTheme.labelLarge?.color,
                 fontSize: 16,

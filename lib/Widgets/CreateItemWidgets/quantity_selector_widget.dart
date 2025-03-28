@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../Bloc_Cubit/CreateItemCubit/create_item_cubit.dart';
@@ -16,7 +17,7 @@ class QuantitySelectorWidget extends StatelessWidget {
     return Row(
       children: [
         Text(
-          'Quantità:',
+          'Quantity:'.tr(),
           style: TextStyle(
             color: theme.textTheme.labelLarge?.color,
             fontSize: 16,

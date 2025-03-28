@@ -1,6 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shop_n_roll/Themes/cyberpunk_theme.dart';
+import 'package:shop_n_roll/Themes/godofwar_theme.dart';
+import 'package:shop_n_roll/Themes/honkaistarrail_theme.dart';
+import 'package:shop_n_roll/Themes/pokemon_theme.dart';
+import 'package:shop_n_roll/Themes/thewitcher_theme.dart';
+import 'package:shop_n_roll/Themes/warframe_theme.dart';
 import '../../FireBase/theme_preference_service.dart';
 import '../../Themes/default_theme.dart';
 import '../../Themes/earthy_theme.dart';
@@ -18,6 +24,12 @@ final themeMap = {
   'vintage': vintageRetroTheme,
   'earthy': earthyTheme,
   'ocean': oceanBreezeTheme,
+  'cyberpunk': cyberpunkTheme ,
+  'godofwar': godOfWarTheme,
+  'pokemon': pokemonTheme ,
+  'honkaistarrail': honkaiStarRailTheme,
+  'warframe': warframeTheme,
+  'witcher' : witcherTheme
 };
 
 class ThemeCubit extends Cubit<ThemeData> {

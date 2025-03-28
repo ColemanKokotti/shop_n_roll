@@ -43,6 +43,8 @@ dependencies:
 
   bloc: any
   flutter_launcher_icons: ^0.14.3
+  easy_localization: ^3.0.7+1
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +72,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/translation/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

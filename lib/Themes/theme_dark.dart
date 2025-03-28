@@ -42,7 +42,7 @@ final ThemeData darkTheme = ThemeData(
   dropdownMenuTheme: DropdownMenuThemeData(
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: Color.fromARGB(200, 50, 50, 50),
+      fillColor: Colors.grey,
       border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
     ),
     textStyle: TextStyle(color: Colors.white, fontSize: 30),

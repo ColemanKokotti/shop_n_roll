@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 final ThemeData earthyTheme = ThemeData(
   primaryColor: Color(0xFF6D4C41), // Marrone terroso
   scaffoldBackgroundColor: Color(0xFFD7CCC8), // Beige sabbia
-  secondaryHeaderColor: Color(0xFF8D6E63), // Marrone più chiaro
+  secondaryHeaderColor: Color(0xFFCD853F), // Marrone più chiaro
 
   appBarTheme: AppBarTheme(
     color: Color(0xFF5D4037), // Marrone scuro
@@ -18,7 +18,7 @@ final ThemeData earthyTheme = ThemeData(
 
   textButtonTheme: TextButtonThemeData(
     style: TextButton.styleFrom(
-      foregroundColor: Color(0xFF5D4037), // Marrone scuro
+      foregroundColor:Color(0xFFCD853F), // Marrone scuro
     ),
   ),
 

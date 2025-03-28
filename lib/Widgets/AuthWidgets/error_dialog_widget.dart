@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 void showErrorDialog(BuildContext context, String message) {
@@ -12,7 +13,7 @@ void showErrorDialog(BuildContext context, String message) {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Error',
+              'Error'.tr(),
               style: TextStyle(
                 color: theme.appBarTheme.foregroundColor,
                 fontSize: 20,

@@ -37,12 +37,14 @@ class ListScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: ItemListWidget(),
-            ),
-          ],
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ItemListWidget(),
+              ),
+            ],
+          ),
         ),
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 20.0, right: 20.0),

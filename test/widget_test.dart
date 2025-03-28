@@ -1,19 +1,25 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shop_n_roll/myapp.dart';
+import 'package:shop_n_roll/Bloc_Cubit/AuthCubit/auth_cubit.dart';
+import 'package:shop_n_roll/FireBase/auth_service.dart';
+import 'package:shop_n_roll/FireBase/account_service.dart';
+import 'package:shop_n_roll/Bloc_Cubit/ThemeCubit/theme_cubit.dart';
+import 'package:shop_n_roll/FireBase/theme_preference_service.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Create a mock AuthCubit for testing
+    final authCubit = AuthCubit(
+        AuthService(FirebaseAuth.instance),
+        AccountService(),
+        ThemeCubit(),
+        ThemePreferenceService()
+    );
+
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp(authCubit: authCubit));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

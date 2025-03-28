@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,7 +30,7 @@ class IconSelectorButton extends StatelessWidget {
               return AlertDialog(
                 backgroundColor: theme.cardColor,
                 title: Text(
-                  'Seleziona un\'icona per la modifica',
+                  'Select an icon for editing:'.tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: theme.textTheme.labelLarge?.color,
@@ -56,13 +57,13 @@ class IconSelectorButton extends StatelessWidget {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text('Annulla', style: TextStyle(fontSize: 15)),
+                        child: Text('Cancel'.tr(), style: TextStyle(fontSize: 15)),
                       ),
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text('Conferma', style: TextStyle(fontSize: 15)),
+                        child: Text('Confirm'.tr(), style: TextStyle(fontSize: 15)),
                       ),
                     ],
                   ),

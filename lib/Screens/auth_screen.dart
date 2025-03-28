@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,48 +30,50 @@ class AuthScreen extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Text(
-              'Authentication',
+              'Authentication'.tr(),
               style: TextStyle(color: theme.appBarTheme.foregroundColor)
           ),
           backgroundColor: theme.appBarTheme.backgroundColor,
         ),
-        body: BlocListener<AuthCubit, AuthState>(
-          listener: (context, state) {
-            if (state is AuthAuthenticated) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => ListScreen()),
-              );
-            }
-
-            if (state is AuthErrorDialogState) {
-              showErrorDialog(context, state.message);
-            }
-          },
-          child: BlocBuilder<AuthCubit, AuthState>(
-            builder: (context, state) {
-              if (state is AuthLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is AuthAuthenticated) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Welcome, ${state.user.email ?? "User"}',
-                        style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
+        body: SafeArea(
+          child: BlocListener<AuthCubit, AuthState>(
+            listener: (context, state) {
+              if (state is AuthAuthenticated) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ListScreen()),
                 );
-              } else {
-                return const AuthForm();
+              }
+
+              if (state is AuthErrorDialogState) {
+                showErrorDialog(context, state.message);
               }
             },
+            child: BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, state) {
+                if (state is AuthLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is AuthAuthenticated) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Welcome, ${state.user.email ?? "User"}'.tr(),
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  );
+                } else {
+                  return const AuthForm();
+                }
+              },
+            ),
           ),
         ),
       ),

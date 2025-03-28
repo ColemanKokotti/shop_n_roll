@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedButton extends StatefulWidget {
@@ -44,7 +45,7 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
         padding: const EdgeInsets.only(top: 20),
         child: ElevatedButton(
           onPressed: widget.onPressed,
-          child: Text('Let \'s go shopping',style: TextStyle(color: theme.appBarTheme.foregroundColor),),
+          child: Text('Let s go shopping'.tr(),style: TextStyle(color: theme.appBarTheme.foregroundColor),),
         ),
       ),
     );

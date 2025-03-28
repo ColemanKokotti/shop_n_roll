@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../Bloc_Cubit/ThemeCubit/settings_theme_cubit.dart';
@@ -6,10 +7,43 @@ import '../../Bloc_Cubit/ThemeCubit/theme_cubit.dart';
 class ThemeSelector extends StatelessWidget {
   const ThemeSelector({super.key});
 
+  Map<String, Color> getThemeColors() {
+    return {
+      'default': Color(0xFF009688),
+      'light': Colors.blue,
+      'dark': Colors.grey[800]!,
+      'pastel': Color(0xFFFFB6C1),
+      'vintage': Color(0xFF795548),
+      'earthy': Color(0xFF6D4C41),
+      'ocean': Color(0xFF0277BD),
+      'cyberpunk': Color(0xFF00FFD1),
+      'godofwar': Color(0xFF8B0000),
+      'pokemon' :  Color(0xFFFF0000),
+      'honkaistarrail' : Color(0xFF4A6CFF),
+      'warframe':  Color(0xFF00A8CC),
+      'witcher':Color(0xFFB22222),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final themeOptions = ['default', 'light', 'dark', 'pastel', 'vintage', 'earthy', 'ocean'];
+    final themeOptions = [
+      'default',
+      'light',
+      'dark',
+      'pastel',
+      'vintage',
+      'earthy',
+      'ocean',
+      'cyberpunk',
+      'godofwar',
+      'pokemon',
+      'honkaistarrail',
+      'warframe',
+      'witcher'
+    ];
+    final themeColors = getThemeColors();
 
     String getCurrentTheme() {
       final currentThemeData = context.watch<ThemeCubit>().state;
@@ -29,7 +63,7 @@ class ThemeSelector extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Theme Selector',
+            'Theme Selector'.tr(),
             style: TextStyle(
               color: theme.primaryColor,
               fontSize: 20,
@@ -62,13 +96,27 @@ class ThemeSelector extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      currentTheme.toUpperCase(),
-                      style: TextStyle(
-                        color: theme.primaryColor,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    Row(
+                      children: [
+                        Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: themeColors[currentTheme],
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          currentTheme.toUpperCase(),
+                          style: TextStyle(
+                            color: theme.primaryColor,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                     Icon(
                       context.watch<SettingsThemeCubit>().state
@@ -119,13 +167,27 @@ class ThemeSelector extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                option.toUpperCase(),
-                                style: TextStyle(
-                                  color: isSelected ? theme.primaryColor : theme.textTheme.bodyLarge?.color,
-                                  fontSize: 16.0,
-                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                ),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 20,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: themeColors[option],
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    option.toUpperCase(),
+                                    style: TextStyle(
+                                      color: isSelected ? theme.primaryColor : theme.textTheme.bodyLarge?.color,
+                                      fontSize: 16.0,
+                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
                               ),
                               if (isSelected)
                                 Icon(

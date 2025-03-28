@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../Bloc_Cubit/AuthCubit/auth_cubit.dart';
@@ -41,10 +42,11 @@ class RegisterWidget extends StatelessWidget {
               context.read<AuthCubit>().register(
                 emailController.text,
                 passwordController.text,
+                context
               );
             },
             style: theme.elevatedButtonTheme.style,
-            child: Text('Sig in'),
+            child: Text('Sign up').tr(),
           ),
         ],
       ),

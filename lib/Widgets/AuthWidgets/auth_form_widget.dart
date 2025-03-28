@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'AuthLogIn/login_widget.dart';
 import 'AuthSignIn/sigin_widget.dart';
@@ -18,8 +19,8 @@ class AuthForm extends StatelessWidget {
             child: TabBar(
               labelColor: theme.appBarTheme.foregroundColor,
               tabs: [
-                Tab(text: 'Login'),
-                Tab(text: 'Registration'),
+                Tab(text: 'Login'.tr()),
+                Tab(text: 'Registration'.tr()),
               ],
             ),
           ),

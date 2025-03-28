@@ -20,33 +20,35 @@ class ListDetailed extends StatelessWidget {
         centerTitle: true,
         title: Text(item.nameItem, style: TextStyle(color: theme.appBarTheme.titleTextStyle?.color)),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            getWidgetFromString(item.iconItem, size: 100, color: theme.iconTheme.color),
-            const SizedBox(height: 20),
-            Text(
-              item.nameItem,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: theme.textTheme.labelLarge?.color,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                item.descriptionItem,
-                textAlign: TextAlign.center,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              getWidgetFromString(item.iconItem, size: 100, color: theme.iconTheme.color),
+              const SizedBox(height: 20),
+              Text(
+                item.nameItem,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                   color: theme.textTheme.labelLarge?.color,
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  item.descriptionItem,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: theme.textTheme.labelLarge?.color,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
