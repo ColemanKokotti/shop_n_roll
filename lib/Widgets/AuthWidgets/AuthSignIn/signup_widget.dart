@@ -5,29 +5,19 @@ import '../../../Bloc_Cubit/AuthCubit/auth_cubit.dart';
 import '../../../Bloc_Cubit/AuthCubit/auth_state.dart';
 import '../animated_text_widget.dart';
 
-class LoginWidget extends StatelessWidget {
+class SingUpWidget extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  LoginWidget({super.key});
+  SingUpWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    context.read<AuthCubit>().loadCredentials();
-
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        if (state is AuthUpdate) {
-
-          if (state.email != null) {
-            emailController.text = state.email!;
-          }
-          if (state.password != null) {
-            passwordController.text = state.password!;
-          }
-        }
-        return SingleChildScrollView(
+        final cubit = context.read<AuthCubit>();
+        return SingleChildScrollView( // Aggiunto SingleChildScrollView
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -47,12 +37,12 @@ class LoginWidget extends StatelessWidget {
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                   ),
-                  onChanged: (value) => context.read<AuthCubit>().updateEmail(value),
                 ),
                 SizedBox(height: 12),
                 TextFormField(
                   controller: passwordController,
-                  obscureText: context.read<AuthCubit>().obscureText,
+                  obscureText: cubit.obscureText,
+                  onChanged: (value) => cubit.updatePasswordRequirements(value),
                   decoration: InputDecoration(
                     labelText: 'Password',
                     labelStyle: TextStyle(
@@ -61,39 +51,64 @@ class LoginWidget extends StatelessWidget {
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     suffixIcon: IconButton(
-                      icon: Icon(context.read<AuthCubit>().obscureText
+                      icon: Icon(cubit.obscureText
                           ? Icons.visibility
                           : Icons.visibility_off),
-                      onPressed: () {
-                        context.read<AuthCubit>().toggleObscureText();
-                      },
+                      onPressed: () => cubit.toggleObscureText(),
                     ),
                   ),
-                  onChanged: (value) => context.read<AuthCubit>().updatePassword(value),
                 ),
                 SizedBox(height: 8),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Checkbox(
-                      value: context.read<AuthCubit>().rememberMe,
-                      onChanged: (value) {
-                        context.read<AuthCubit>().updateRememberMe(value!);
-                      },
+                    Text(
+                      'Password must contain:'.tr(),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Text('Remember me').tr(),
+                    Text(
+                      '- At least 1 uppercase letter'.tr(),
+                      style: TextStyle(
+                          color: cubit.hasUppercase ? Colors.green : Colors.black),
+                    ),
+                    Text(
+                      '- At least 1 number'.tr(),
+                      style: TextStyle(
+                          color: cubit.hasNumber ? Colors.green : Colors.black),
+                    ),
+                    Text(
+                      '- At least 1 special character'.tr(),
+                      style: TextStyle(
+                          color: cubit.hasSpecialChar ? Colors.green : Colors.black),
+                    ),
+                    Text(
+                      '- Minimum 10 characters'.tr(),
+                      style: TextStyle(
+                          color: cubit.hasMinLength ? Colors.green : Colors.black),
+                    ),
                   ],
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<AuthCubit>().saveCredentials();
-                    context.read<AuthCubit>().login(
-                      emailController.text,
-                      passwordController.text,
-                    );
+                    if (cubit.hasUppercase &&
+                        cubit.hasNumber &&
+                        cubit.hasSpecialChar &&
+                        cubit.hasMinLength) {
+                      context.read<AuthCubit>().register(
+                        emailController.text,
+                        passwordController.text,
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content:
+                            Text('Password does not meet requirements.')),
+                      );
+                    }
                   },
                   style: theme.elevatedButtonTheme.style,
-                  child: Text('Login').tr(),
+                  child: Text('Sign up').tr(),
                 ),
               ],
             ),

@@ -45,9 +45,6 @@ class AuthScreen extends StatelessWidget {
                 );
               }
 
-              if (state is AuthErrorDialogState) {
-                showErrorDialog(context, state.message);
-              }
             },
             child: BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {

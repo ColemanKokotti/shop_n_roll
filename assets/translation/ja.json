@@ -28,5 +28,10 @@
   "Undo": "元に戻す",
   "Welcome": "ようこそ",
   "Welcome, ${state.user.email ?? \"User\"}": "ようこそ、${state.user.email ?? \"ユーザー\"}",
-  "Remember me": "私を覚えて"
+  "Remember me": "私を覚えて",
+  "Password must contain:": "パスワードには以下を含める必要があります:",
+  "- At least 1 uppercase letter": "- 少なくとも1つの大文字",
+  "- At least 1 special character": "- 少なくとも1つの特殊文字",
+  "- Minimum 10 characters":  "- 最小10文字",
+  "- At least 1 number":"- 少なくとも1つの数字"
 }

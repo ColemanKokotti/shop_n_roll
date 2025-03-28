@@ -8,21 +8,23 @@ class AuthLoading extends AuthState {}
 
 class AuthAuthenticated extends AuthState {
   final User user;
-  AuthAuthenticated(this.user);
+  final String? preferredLanguage;
+
+  AuthAuthenticated(this.user, this.preferredLanguage);
 }
 
 class AuthUnauthenticated extends AuthState {}
 
 class AuthError extends AuthState {
-  final String message;
-  AuthError(this.message);
+  final String error;
+
+  AuthError(this.error);
 }
 
-class AuthLoginState extends AuthState {}
+class AuthUpdate extends AuthState {
+  final bool? rememberMe;
+  final String? email;
+  final String? password;
 
-class AuthRegisterState extends AuthState {}
-
-class AuthErrorDialogState extends AuthState {
-  final String message;
-  AuthErrorDialogState(this.message);
+  AuthUpdate({this.rememberMe, this.email, this.password});
 }

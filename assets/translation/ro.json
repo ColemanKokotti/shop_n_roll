@@ -28,7 +28,12 @@
   "Undo": "Anulează",
   "Welcome": "Bun venit",
   "Welcome, ${state.user.email ?? \"User\"}": "Bun venit, ${state.user.email ?? \"Utilizator\"}",
-  "Remember me": "Ține-mă minte"
+  "Remember me": "Ține-mă minte",
+  "Password must contain:": "Parola trebuie să conțină:",
+  "- At least 1 uppercase letter":"- Cel puțin 1 literă mare",
+  "- At least 1 special character": "- Cel puțin 1 caracter special",
+  "- Minimum 10 characters":"- Minimum 10 caractere",
+  "- At least 1 number":"- Cel puțin 1 număr"
 }
 
 

@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Bloc_Cubit/ThemeCubit/theme_cubit.dart';
 import '../../FireBase/account_service.dart';
@@ -15,32 +14,89 @@ class AuthCubit extends Cubit<AuthState> {
   final AccountService _accountService;
   final ThemeCubit _themeCubit;
   final ThemePreferenceService _themePreferenceService;
-  final LanguagePreferenceService _languagePreferenceService = LanguagePreferenceService();
+  final LanguagePreferenceService _languagePreferenceService =
+  LanguagePreferenceService();
+
+  AuthCubit(this._authService, this._accountService, this._themeCubit,
+      this._themePreferenceService)
+      : super(AuthInitial());
+
+  bool obscureText = true;
+  bool hasUppercase = false;
+  bool hasNumber = false;
+  bool hasSpecialChar = false;
+  bool hasMinLength = false;
   bool rememberMe = false;
+  String email = '';
+  String password = '';
 
-  AuthCubit(this._authService, this._accountService, this._themeCubit, this._themePreferenceService) : super(AuthInitial());
-
-  void setRememberMe(bool value) {
-    rememberMe = value;
+  void toggleObscureText() {
+    obscureText = !obscureText;
+    emit(AuthUpdate());
   }
 
-  Future<void> login(String email, String password, BuildContext context) async {
+  void updatePasswordRequirements(String password) {
+    hasUppercase = password.contains(RegExp(r'[A-Z]'));
+    hasNumber = password.contains(RegExp(r'[0-9]'));
+    hasSpecialChar = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    hasMinLength = password.length >= 10;
+    emit(AuthUpdate());
+  }
+
+  void updateRememberMe(bool value) {
+    rememberMe = value;
+    emit(AuthUpdate(rememberMe: rememberMe));
+  }
+
+  void updateEmail(String value) {
+    email = value;
+    emit(AuthUpdate(email: email));
+  }
+
+  void updatePassword(String value) {
+    password = value;
+    emit(AuthUpdate(password: password));
+  }
+
+  Future<void> loadCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    rememberMe = prefs.getBool('rememberMe') ?? false;
+    if (rememberMe) {
+      email = prefs.getString('email') ?? '';
+      password = prefs.getString('password') ?? '';
+    }
+    emit(AuthUpdate(rememberMe: rememberMe, email: email, password: password));
+  }
+
+  Future<void> saveCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (rememberMe) {
+      prefs.setString('email', email);
+      prefs.setString('password', password);
+      prefs.setBool('rememberMe', true);
+    } else {
+      prefs.remove('email');
+      prefs.remove('password');
+      prefs.remove('rememberMe');
+    }
+    emit(AuthUpdate());
+  }
+
+  Future<void> login(String email, String password) async {
     try {
       emit(AuthLoading());
       User? user = await _authService.login(email, password);
       if (user != null) {
-        String? savedTheme = await _themePreferenceService.getThemePreference(user.uid);
+        String? savedTheme =
+        await _themePreferenceService.getThemePreference(user.uid);
         if (savedTheme != null) {
           _themeCubit.selectTheme(savedTheme);
         }
-        String? savedLanguage = await _languagePreferenceService.getLanguagePreference(user.uid);
-        if (savedLanguage != null && context.mounted) {
-          await context.setLocale(Locale(savedLanguage));
-        } else if (context.mounted) {
-          await _languagePreferenceService.saveLanguagePreference(user.uid, 'en');
-          await context.setLocale(const Locale('en'));
-        }
-        emit(AuthAuthenticated(user));
+
+        String? savedLanguage =
+        await _languagePreferenceService.getLanguagePreference(user.uid);
+
+        emit(AuthAuthenticated(user, savedLanguage));
       } else {
         emit(AuthUnauthenticated());
       }
@@ -50,17 +106,17 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> register(String email, String password, BuildContext context) async {
+  Future<void> register(String email, String password) async {
     try {
       emit(AuthLoading());
       User? user = await _authService.register(email, password);
-      if (user != null && context.mounted) {
+      if (user != null) {
         await _accountService.createUserAccount(user.uid);
+
         await _themePreferenceService.saveThemePreference(user.uid, 'default');
         await _languagePreferenceService.saveLanguagePreference(user.uid, 'en');
-        await context.setLocale(const Locale('en'));
-        _themeCubit.selectTheme('default');
-        emit(AuthAuthenticated(user));
+
+        emit(AuthAuthenticated(user, 'en'));
       } else {
         emit(AuthUnauthenticated());
       }
@@ -70,22 +126,21 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> checkAuthStatus(BuildContext context) async {
+  Future<void> checkAuthStatus() async {
     try {
       User? currentUser = _authService.getCurrentUser();
       if (currentUser != null) {
-        String? savedTheme = await _themePreferenceService.getThemePreference(currentUser.uid);
+        String? savedTheme =
+        await _themePreferenceService.getThemePreference(currentUser.uid);
         if (savedTheme != null) {
           _themeCubit.selectTheme(savedTheme);
         }
-        String? savedLanguage = await _languagePreferenceService.getLanguagePreference(currentUser.uid);
-        if (savedLanguage != null && context.mounted) {
-          await context.setLocale(Locale(savedLanguage));
-        } else if (context.mounted) {
-          await _languagePreferenceService.saveLanguagePreference(currentUser.uid, 'en');
-          await context.setLocale(const Locale('en'));
-        }
-        emit(AuthAuthenticated(currentUser));
+
+        String? savedLanguage =
+        await _languagePreferenceService.getLanguagePreference(
+            currentUser.uid);
+
+        emit(AuthAuthenticated(currentUser, savedLanguage));
       } else {
         emit(AuthUnauthenticated());
       }
@@ -96,25 +151,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> logout(BuildContext context) async {
     try {
-      await _authService.logout(context);
-      _themeCubit.selectTheme('default');
-      if (context.mounted) {
-        await context.setLocale(const Locale('en'));
-      }
+      await _authService.logout(context, this);
       emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(e.toString()));
-    }
-  }
-
-  Future<void> checkSavedCredentials(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? email = prefs.getString('email');
-    String? password = prefs.getString('password');
-    bool rememberMe = prefs.getBool('rememberMe') ?? false;
-
-    if (rememberMe && email != null && password != null) {
-      login(email, password, context);
     }
   }
 }

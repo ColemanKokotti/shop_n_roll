@@ -1,12 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Bloc_Cubit/LanguageCubit/setting_language_cubit.dart';
 import 'Bloc_Cubit/ThemeCubit/theme_cubit.dart';
 import 'Bloc_Cubit/ThemeCubit/settings_theme_cubit.dart';
 import 'Bloc_Cubit/LanguageCubit/language_cubit.dart';
 import 'Bloc_Cubit/AuthCubit/auth_cubit.dart';
 import 'Screens/splash_screen.dart';
+import 'Screens/auth_screen.dart';
 
 class MyApp extends StatefulWidget {
   final AuthCubit authCubit;
@@ -17,11 +19,41 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  bool _isFirstLaunch = true;
+
   @override
   void initState() {
     super.initState();
-    widget.authCubit.checkSavedCredentials(context);
+    _checkFirstLaunch();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _resetLaunchCounter();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
+      _resetLaunchCounter();
+    }
+  }
+
+  Future<void> _checkFirstLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+    final launchCounter = prefs.getInt('app_launch_counter') ?? 0;
+    setState(() {
+      _isFirstLaunch = launchCounter == 0;
+    });
+  }
+
+  Future<void> _resetLaunchCounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('app_launch_counter', 0);
   }
 
   @override
@@ -50,10 +82,10 @@ class _MyAppState extends State<MyApp> {
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
-            title: "Shop 'n' Roll 🎸",
+            title: "Shop 'n' Roll ",
             theme: currentTheme,
             debugShowCheckedModeBanner: false,
-            home: const SplashScreen(),
+            home: _isFirstLaunch ? const SplashScreen() : const AuthScreen(),
           );
         },
       ),

@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../myapp.dart';
+import '../Bloc_Cubit/AuthCubit/auth_cubit.dart';
 import 'firebase_language_preference.dart';
 import 'theme_preference_service.dart';
-import '../Screens/auth_screen.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth;
@@ -42,22 +43,19 @@ class AuthService {
     }
   }
 
-  Future<void> logout(BuildContext context) async {
+  Future<void> logout(BuildContext context, AuthCubit authCubit) async {
     try {
       final currentUser = _firebaseAuth.currentUser;
 
-      // Clear language and theme preferences if user is logged in
       if (currentUser != null) {
         await _languagePreferenceService.clearLanguagePreference(currentUser.uid);
         await _themePreferenceService.clearThemePreference(currentUser.uid);
       }
 
-      // Logout
       await _firebaseAuth.signOut();
 
-      // Navigate to AuthScreen
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const AuthScreen()),
+        MaterialPageRoute(builder: (context) => MyApp(authCubit: authCubit)),
             (Route<dynamic> route) => false,
       );
     } catch (e) {

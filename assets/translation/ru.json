@@ -28,6 +28,11 @@
   "Undo": "Отменить",
   "Welcome": "Добро пожаловать",
   "Welcome, ${state.user.email ?? \"User\"}": "Добро пожаловать, ${state.user.email ?? \"Пользователь\"}",
-  "Remember me":  "Запомни меня"
+  "Remember me":  "Запомни меня",
+  "Password must contain:":"Пароль должен содержать:",
+  "- At least 1 uppercase letter":"- Минимум 1 заглавную букву",
+  "- At least 1 special character":"- Минимум 1 специальный символ",
+  "- Minimum 10 characters":"- Минимум 10 символов",
+  "- At least 1 number":"- Минимум 1 цифру"
 }
 

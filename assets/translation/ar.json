@@ -28,5 +28,10 @@
   "Undo": "تراجع",
   "Welcome": "أهلاً بك",
   "Welcome, ${state.user.email ?? \"User\"}": "أهلاً بك، ${state.user.email ?? \"مستخدم\"}",
-  "Remember me":  "تذكرني"
+  "Remember me":  "تذكرني",
+  "Password must contain:": "يجب أن تحتوي كلمة المرور على:",
+  "- At least 1 uppercase letter": "- حرف كبير واحد على الأقل",
+  "- At least 1 special character": "- حرف خاص واحد على الأقل",
+  "- Minimum 10 characters": "- 10 أحرف كحد أدنى",
+  "- At least 1 number": "- رقم واحد على الأقل"
 }

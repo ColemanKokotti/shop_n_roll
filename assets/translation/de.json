@@ -28,7 +28,12 @@
   "Undo": "Rückgängig",
   "Welcome": "Willkommen",
   "Welcome, ${state.user.email ?? \"User\"}": "\"Willkommen, ${state.user.email ?? \\\"Benutzer\\\"}\"",
-  "Remember me":"Erinnere dich an mich"
+  "Remember me":"Erinnere dich an mich",
+  "Password must contain:":"Passwort muss enthalten:",
+  "- At least 1 uppercase letter": "- Mindestens 1 Großbuchstaben",
+  "- At least 1 special character":"- Mindestens 1 Sonderzeichen",
+  "- Minimum 10 characters": "- Mindestens 10 Zeichen",
+  "- At least 1 number":"- Mindestens 1 Zahl"
 }
 
 

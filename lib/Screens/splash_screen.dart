@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Widgets/SplashScreenWidgets/animated_button.dart';
 import 'auth_screen.dart';
-import 'list_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,7 +10,8 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
   late AnimationController _shakeController;
   late Animation<Offset> _shakeAnimation;
   late AnimationController _textController;
@@ -22,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
+    _initializeApp();
 
     _shakeController = AnimationController(
       duration: Duration(seconds: 1),
@@ -49,23 +50,16 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         _showButton = true;
       });
     });
-
-    _checkStayConnected();
   }
 
-  Future<void> _checkStayConnected() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool stayConnectedPreference = prefs.getBool('stayConnected') ?? false;
+  Future<void> _initializeApp() async {
+    // Wait for a short duration to show splash screen
+    await Future.delayed(const Duration(seconds: 2));
+  }
 
-    if (stayConnectedPreference) {
-      await Future.delayed(Duration(seconds: 4));
-
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const ListScreen()),
-        );
-      }
-    }
+  Future<void> _setAppLaunched() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('app_launch_counter', 1);
   }
 
   @override
@@ -96,28 +90,31 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             FadeTransition(
               opacity: _textAnimation,
               child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text(
-                  "Shop 'n' Roll",
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    foreground: Paint()
-                      ..shader = LinearGradient(
-                        colors: [theme.primaryColor, theme.secondaryHeaderColor],
-                      ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 50.0)),
-                  ),
-                )
-
-              ),
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text(
+                    "Shop 'n' Roll",
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      foreground: Paint()
+                        ..shader = LinearGradient(
+                          colors: [
+                            theme.primaryColor,
+                            theme.secondaryHeaderColor
+                          ],
+                        ).createShader(
+                            const Rect.fromLTWH(0.0, 0.0, 200.0, 50.0)),
+                    ),
+                  )),
             ),
             if (_showButton)
               AnimatedButton(
                 onPressed: () {
+                  _setAppLaunched();
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AuthScreen(),
+                      builder: (context) => const AuthScreen(),
                     ),
                   );
                 },

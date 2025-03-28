@@ -28,7 +28,12 @@
   "Undo": "Annuler",
   "Welcome": "Bienvenue",
   "Welcome, ${state.user.email ?? \"User\"}": "Bienvenue, ${state.user.email ?? \"Utilisateur\"}",
-  "Remember me": "Souviens-toi de moi"
+  "Remember me": "Souviens-toi de moi",
+  "Password must contain:": "Le mot de passe doit contenir :",
+  "- At least 1 uppercase letter": "- Au moins 1 lettre majuscule",
+  "- At least 1 special character": "- Au moins 1 caractère spécial",
+  "- Minimum 10 characters":"- Minimum 10 caractères",
+  "- At least 1 number":"- Au moins 1 chiffre"
 }
 
 

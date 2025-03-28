@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'AuthLogIn/login_widget.dart';
-import 'AuthSignIn/sigin_widget.dart';
+import 'AuthSignIn/signup_widget.dart';
 
 class AuthForm extends StatelessWidget {
   const AuthForm({super.key});
@@ -28,7 +28,7 @@ class AuthForm extends StatelessWidget {
             child: TabBarView(
               children: [
                 LoginWidget(),
-                RegisterWidget(),
+                SingUpWidget(),
               ],
             ),
           ),
